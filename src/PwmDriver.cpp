@@ -9,7 +9,7 @@
 #include "PwmDriver.h"
 
 // Set to true to print some debug messages, or false to disable them.
-const bool ENABLE_DEBUG_OUTPUT = true;
+const bool ENABLE_DEBUG_OUTPUT = false;
 
 const uint8_t PCA9685_SUBADR1 = 0x2;
 const uint8_t PCA9685_SUBADR2 = 0x3;
@@ -85,7 +85,7 @@ void PwmDriver::set_pwm(HDLN handle, uint8_t num, uint16_t on, uint16_t off) {
                                           1, LED0_ON_L+4*num, // i2c device internal address
                                           4, (uint8_t*)&data); // data buffer
     if (DLN_FAILED(result)) {
-        std::cout << "DlnI2cMasterWrite() returned 0x" << result << std::endl;
+        std::cout << "DlnI2cMasterWrite() error 0x" << std::hex << result << std::endl;
         return;
     }
 }
@@ -128,7 +128,7 @@ uint8_t PwmDriver::read8(HDLN handle, uint8_t addr) {
     uint8_t data;
     DLN_RESULT result = DlnI2cMasterRead(handle, I2C_PORT, _i2c_addr, 1, addr, 1, &data);
     if (DLN_FAILED(result)) {
-        std::cout << "DlnI2cMasterRead() returned 0x" << result << std::endl;
+        std::cout << "DlnI2cMasterRead() error 0x" << std::hex << result << std::endl;
         return 0;
     }
     return data;
@@ -148,7 +148,7 @@ void PwmDriver::write8(HDLN handle, uint8_t addr, uint8_t data) {
                                           1, addr, // i2c device internal address
                                           1, &data); // data buffer
     if (DLN_FAILED(result)) {
-        std::cout << "DlnI2cMasterWrite() returned 0x" << result << std::endl;
+        std::cout << "DlnI2cMasterWrite() error 0x" << std::hex << result << std::endl;
         return;
     }
 

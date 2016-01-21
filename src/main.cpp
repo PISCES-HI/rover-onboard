@@ -5,6 +5,9 @@
 #include "dln/dln_gpio.h"
 //#include "dln/dln_i2c_master.h"
 
+#include "i2c.h"
+#include "PwmDriver.h"
+
 int main() {
     /*HDLN handle;
     uint8_t led_count;
@@ -52,6 +55,13 @@ int main() {
                 DlnGpioPinSetOutVal(handle, 0, 1);
                 DlnGpioPinSetOutVal(handle, 1, 0);
                 DlnGpioPinSetOutVal(handle, 2, 0);
+
+                init_i2c(handle);
+
+                PwmDriver pwm;
+                pwm.begin(handle);
+                pwm.set_pwm_freq(handle, 50);
+                pwm.set_pin(handle, 0, 512);
             }
             DlnCloseHandle(handle);
         }
