@@ -8,7 +8,7 @@ all: bin/rover_onboard
 bin/rover_onboard: $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o bin/rover_onboard
 
-main.o: src/main.cpp
+main.o: src/main.cpp src/PwmDriver.h src/PwmDriver.cpp src/i2c.h src/i2c.cpp
 	$(CC) $(CFLAGS) -c src/main.cpp
 
 i2c.o: src/i2c.cpp src/i2c.h
