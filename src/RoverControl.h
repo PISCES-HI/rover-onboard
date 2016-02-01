@@ -19,6 +19,8 @@ class RoverControl {
         float r_motor;
         float fwd_cam_pan;
         float fwd_cam_tilt;
+        float sadl;
+        float blade;
 };
 
 #endif // ROVER_CONTROL_H

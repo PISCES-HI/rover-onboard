@@ -6,7 +6,8 @@
 #include <string>
 
 RoverControl::RoverControl(HDLN& handle) : socket("0.0.0.0", 30001), l_motor(0.0), r_motor(0.0),
-                                           fwd_cam_pan(0.0), fwd_cam_tilt(0.0) {
+                                           fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
+                                           sadl(0.0), blade(0.0) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
     pwm.set_pin(handle, 0, 512);
@@ -52,9 +53,11 @@ void RoverControl::update() {
                 break;
             case 'E':
                 // SADL
+                sscanf((char*)buffer+1, "%f|", &this->sadl);
                 break;
             case 'F':
                 // Blade
+                sscanf((char*)buffer+1, "%f|", &this->blade);
                 break;
             case 'G':
                 // Brake
