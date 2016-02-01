@@ -17,6 +17,8 @@ class RoverControl {
         PwmDriver pwm;
         float l_motor;
         float r_motor;
+        float fwd_cam_pan;
+        float fwd_cam_tilt;
 };
 
 #endif // ROVER_CONTROL_H
