@@ -42,34 +42,15 @@ int main() {
     DlnGetDeviceId(handle, &id);
     printf("Opened DLN device: %d\t%d\n", sn, id);
 
-    uint16_t pin = 0;
-    DLN_RESULT enable_result = DlnGpioPinEnable(handle, pin);
-    if (DLN_FAILED(enable_result))
-    {
-        printf("DlnGpioPinEnable failed\n");
-    }
-    DLN_RESULT dir_result = DlnGpioPinSetDirection(handle, pin, 1);
-    if (DLN_FAILED(dir_result))
-    {
-        printf("DlnGpioPinSetDirection failed\n");
-    }
-    uint8_t value = 0;
-    DLN_RESULT val0_result = DlnGpioPinGetVal(handle, 0, &value);
-    printf("P0: %d\n", value);
-    DLN_RESULT val1_result = DlnGpioPinGetVal(handle, 1, &value);
-    printf("P1: %d\n", value);
-    DLN_RESULT val2_result = DlnGpioPinGetVal(handle, 2, &value);
-    printf("P2: %d\n", value);
-    DlnGpioPinSetOutVal(handle, 0, 1);
-    DlnGpioPinSetOutVal(handle, 1, 0);
-    DlnGpioPinSetOutVal(handle, 2, 0);
-
+    // Initialize the i2c master
     init_i2c(handle);
 
-    PwmDriver pwm;
-    pwm.begin(handle);
-    pwm.set_pwm_freq(handle, 50);
-    pwm.set_pin(handle, 0, 512);
+    // Instantiate the rover controller
+    RoverControl rover(handle);
+
+    while (true) {
+        rover.update();
+    }
 
     DlnCloseHandle(handle);
 

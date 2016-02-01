@@ -1,10 +1,14 @@
 #include "RoverControl.h"
 
 #include <iostream>
+#include <cstdio>
 #include <stdint.h>
 #include <string>
 
-RoverControl::RoverControl() : socket("0.0.0.0", 30001) {
+RoverControl::RoverControl(HDLN& handle) : socket("0.0.0.0", 30001), l_motor(0.0), r_motor(0.0) {
+    pwm.begin(handle);
+    pwm.set_pwm_freq(handle, 50);
+    pwm.set_pin(handle, 0, 512);
 }
 
 void RoverControl::update() {
@@ -24,12 +28,18 @@ void RoverControl::update() {
         switch (packet_id) {
             case 'A':
                 // Left motor
+                sscanf((char*)buffer+1, "%f|", &this->l_motor);
+                std::cout << "Got l motor speed: " << this->l_motor << std::endl;
                 break;
             case 'B':
                 // Right motor
+                sscanf((char*)buffer+1, "%f|", &this->r_motor);
+                std::cout << "Got r motor speed: " << this->r_motor << std::endl;
                 break;
             case 'H':
                 // LR motor
+                sscanf((char*)buffer+1, "%f|%f|", &this->l_motor, &this->r_motor);
+                std::cout << "Got lr motor speed: " << this->l_motor << " " << this->r_motor << std::endl;
                 break;
             case 'C':
                 // Pan
