@@ -69,14 +69,6 @@ void PwmDriver::set_pwm_freq(HDLN handle, float freq) {
 void PwmDriver::set_pwm(HDLN handle, uint8_t num, uint16_t on, uint16_t off) {
     //Serial.print("Setting PWM "); Serial.print(num); Serial.print(": "); Serial.print(on); Serial.print("->"); Serial.println(off);
 
-    /*WIRE.beginTransmission(_i2c_addr);
-    WIRE.write(LED0_ON_L+4*num);
-    WIRE.write(on);
-    WIRE.write(on>>8);
-    WIRE.write(off);
-    WIRE.write(off>>8);
-    WIRE.endTransmission();*/
-
     uint8_t data[] = { on, on>>8, off, off>>8 };
 
     DLN_RESULT result = DlnI2cMasterWrite(handle,
@@ -132,13 +124,6 @@ uint8_t PwmDriver::read8(HDLN handle, uint8_t addr) {
         return 0;
     }
     return data;
-
-    /*WIRE.beginTransmission(_i2c_addr);
-    WIRE.write(addr);
-    WIRE.endTransmission();
-
-    WIRE.requestFrom((uint8_t)_i2c_addr, (uint8_t)1);
-    return WIRE.read();*/
 }
 
 void PwmDriver::write8(HDLN handle, uint8_t addr, uint8_t data) {
@@ -151,9 +136,4 @@ void PwmDriver::write8(HDLN handle, uint8_t addr, uint8_t data) {
         std::cout << "DlnI2cMasterWrite() error 0x" << std::hex << result << std::endl;
         return;
     }
-
-    /*WIRE.beginTransmission(_i2c_addr);
-    WIRE.write(addr);
-    WIRE.write(d);
-    WIRE.endTransmission();*/
 }
