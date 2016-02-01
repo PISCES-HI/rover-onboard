@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 
 #include "dln/dln.h"
 #include "dln/dln_generic.h"
@@ -18,11 +18,12 @@ int main() {
     uint32_t device_count;
     result = DlnGetDeviceCount(&device_count);
     if (!DLN_SUCCEEDED(result)) {
-        printf("Failed to get DLN device count");
+        std::cout << "Failed to get DLN device count" << std::endl;
         return -1;
     }
     if (device_count != 1) {
-        printf("There should be one and only one DLN device connected. There are %d", device_count);
+        std::cout << "There should be one and only one DLN device connected. There are "
+                  << device_count << std::endl;
         return -1;
     }
 
@@ -30,7 +31,7 @@ int main() {
     HDLN handle;
     result = DlnOpenDevice(0, &handle);
     if (!DLN_SUCCEEDED(result)) {
-        printf("Failed to open DLN device");
+        std::cout << "Failed to open DLN device" << std::endl;
         return -1;
     }
 
@@ -40,7 +41,7 @@ int main() {
     DlnGetVersion(handle, &version);
     DlnGetDeviceSn(handle, &sn);
     DlnGetDeviceId(handle, &id);
-    printf("Opened DLN device: %d\t%d\n", sn, id);
+    std::cout << "Opened DLN device: " << sn << "\t" << id << std::endl;
 
     // Initialize the i2c master
     init_i2c(handle);
