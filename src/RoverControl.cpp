@@ -119,12 +119,12 @@ const int PWM_SERVO_MIN = 150;
 const int PWM_SERVO_MAX = 450;
 
 void RoverControl::set_cam_pan(float angle) {
-    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MAX, PWM_SERVO_MIN);
+    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MIN, PWM_SERVO_MAX);
     pwm.set_pin(this->handle, CAM_PAN_PIN, duty_cycle);
 }
 
 void RoverControl::set_cam_tilt(float angle) {
-    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MAX, PWM_SERVO_MIN);
+    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MIN, PWM_SERVO_MAX);
     pwm.set_pin(this->handle, CAM_TILT_PIN, duty_cycle);
 }
 
@@ -135,22 +135,22 @@ const int PWM_MOTOR_MIN = 186;
 const int PWM_MOTOR_MAX = 372;
 
 void RoverControl::set_l_motor(int power) {
-    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MIN, PWM_MOTOR_MAX);
     pwm.set_pin(this->handle, L_MOTOR_PIN, duty_cycle);
 }
 
 void RoverControl::set_r_motor(int power) {
-    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MIN, PWM_MOTOR_MAX);
     pwm.set_pin(this->handle, R_MOTOR_PIN, duty_cycle);
 }
 
 void RoverControl::set_sadl(int power) {
-    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MIN, PWM_MOTOR_MAX);
     pwm.set_pin(this->handle, SADL_PIN, duty_cycle);
 }
 
 void RoverControl::set_blade(int power) {
-    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MIN, PWM_MOTOR_MAX);
     pwm.set_pin(this->handle, BLADE_PIN, duty_cycle);
 }
 
