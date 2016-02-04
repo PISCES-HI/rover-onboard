@@ -5,12 +5,22 @@
 #include <stdint.h>
 #include <string>
 
-RoverControl::RoverControl(HDLN& handle) : socket("0.0.0.0", 30001), l_motor(0.0), r_motor(0.0),
-                                           fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
-                                           sadl(0.0), blade(0.0) {
+#include "util.h"
+
+const int L_MOTOR_PIN = 0;
+const int R_MOTOR_PIN = 1;
+const int CAM_PAN_PIN = 2;
+const int CAM_TILT_PIN = 3;
+const int SADL_PIN = 4;
+const int BLADE_PIN = 5;
+const int BRAKE_PIN = 6;
+
+RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
+                                            l_motor(0.0), r_motor(0.0),
+                                            fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
+                                            sadl(0.0), blade(0.0) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
-    pwm.set_pin(handle, 0, 512);
 }
 
 void RoverControl::update() {
@@ -29,44 +39,122 @@ void RoverControl::update() {
         char packet_id = buffer[0];
         switch (packet_id) {
             case 'A':
+            {
                 // Left motor
-                sscanf((char*)buffer+1, "%f|", &this->l_motor);
+                sscanf((char*)buffer+1, "%d|", &this->l_motor);
+                this->set_l_motor(this->l_motor);
                 std::cout << "Got l motor speed: " << this->l_motor << std::endl;
                 break;
+            }
             case 'B':
+            {
                 // Right motor
-                sscanf((char*)buffer+1, "%f|", &this->r_motor);
+                sscanf((char*)buffer+1, "%d|", &this->r_motor);
+                this->set_r_motor(this->r_motor);
                 std::cout << "Got r motor speed: " << this->r_motor << std::endl;
                 break;
+            }
             case 'H':
+            {
                 // LR motor
-                sscanf((char*)buffer+1, "%f|%f|", &this->l_motor, &this->r_motor);
+                sscanf((char*)buffer+1, "%d|%d|", &this->l_motor, &this->r_motor);
+                this->set_l_motor(this->l_motor);
+                this->set_r_motor(this->r_motor);
                 std::cout << "Got lr motor speed: " << this->l_motor << " " << this->r_motor << std::endl;
                 break;
+            }
             case 'C':
+            {
                 // Pan
                 sscanf((char*)buffer+1, "%f|", &this->fwd_cam_pan);
+                this->set_cam_pan(this->fwd_cam_pan);
                 break;
+            }
             case 'D':
+            {
                 // Tilt
                 sscanf((char*)buffer+1, "%f|", &this->fwd_cam_tilt);
+                this->set_cam_pan(this->fwd_cam_tilt);
                 break;
+            }
             case 'E':
+            {
                 // SADL
-                sscanf((char*)buffer+1, "%f|", &this->sadl);
+                sscanf((char*)buffer+1, "%d|", &this->sadl);
+                this->set_sadl(this->sadl);
                 break;
+            }
             case 'F':
+            {
                 // Blade
-                sscanf((char*)buffer+1, "%f|", &this->blade);
+                sscanf((char*)buffer+1, "%d|", &this->blade);
+                this->set_blade(this->sadl);
                 break;
+            }
             case 'G':
+            {
                 // Brake
+                int brake = 0;
+                sscanf((char*)buffer+1, "%d|", &brake);
+                this->brake = (brake == 0 ? false : true);
+                this->set_blade(this->brake);
                 break;
+            }
             case 'Z':
+            {
                 // Text command
                 break;
+            }
         }
     } catch (SocketException e) {
         std::cout << "Failed to receive on socket: " << e.what() << std::endl;
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Motor controls
+
+// Out of 4096
+const int PWM_SERVO_MIN = 150;
+const int PWM_SERVO_MAX = 450;
+
+void RoverControl::set_cam_pan(float angle) {
+    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MAX, PWM_SERVO_MIN);
+    pwm.set_pin(this->handle, CAM_PAN_PIN, duty_cycle);
+}
+
+void RoverControl::set_cam_tilt(float angle) {
+    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MAX, PWM_SERVO_MIN);
+    pwm.set_pin(this->handle, CAM_TILT_PIN, duty_cycle);
+}
+
+////////////////////////
+
+// Out of 4096
+const int PWM_MOTOR_MIN = 186;
+const int PWM_MOTOR_MAX = 372;
+
+void RoverControl::set_l_motor(int power) {
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    pwm.set_pin(this->handle, L_MOTOR_PIN, duty_cycle);
+}
+
+void RoverControl::set_r_motor(int power) {
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    pwm.set_pin(this->handle, R_MOTOR_PIN, duty_cycle);
+}
+
+void RoverControl::set_sadl(int power) {
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    pwm.set_pin(this->handle, SADL_PIN, duty_cycle);
+}
+
+void RoverControl::set_blade(int power) {
+    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MAX, PWM_MOTOR_MIN);
+    pwm.set_pin(this->handle, BLADE_PIN, duty_cycle);
+}
+
+void RoverControl::set_brake(bool on) {
+    int duty_cycle = on ? PWM_MOTOR_MAX : PWM_MOTOR_MIN;
+    pwm.set_pin(this->handle, BRAKE_PIN, duty_cycle);
 }

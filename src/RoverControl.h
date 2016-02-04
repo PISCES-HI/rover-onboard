@@ -8,19 +8,29 @@
 
 class RoverControl {
     public:
-        RoverControl(HDLN& handle);
+        RoverControl(HDLN& _handle);
 
         void update();
 
     private:
+        void set_cam_pan(float angle);
+        void set_cam_tilt(float angle);
+        void set_l_motor(int power);
+        void set_r_motor(int power);
+        void set_sadl(int power);
+        void set_blade(int power);
+        void set_brake(bool on);
+
+        HDLN& handle;
         UDPSocket socket;
         PwmDriver pwm;
-        float l_motor;
-        float r_motor;
         float fwd_cam_pan;
         float fwd_cam_tilt;
-        float sadl;
-        float blade;
+        int l_motor;
+        int r_motor;
+        int sadl;
+        int blade;
+        bool brake;
 };
 
 #endif // ROVER_CONTROL_H

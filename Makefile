@@ -20,7 +20,7 @@ PwmDriver.o: src/PwmDriver.cpp src/PwmDriver.h
 Socket.o: src/Socket.cpp src/Socket.h
 	$(CC) $(CFLAGS) -c src/Socket.cpp
 
-RoverControl.o: src/RoverControl.cpp src/RoverControl.h
+RoverControl.o: src/RoverControl.cpp src/RoverControl.h src/util.h
 	$(CC) $(CFLAGS) -c src/RoverControl.cpp
     	
 clean:
