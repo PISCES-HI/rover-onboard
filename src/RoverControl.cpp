@@ -19,7 +19,8 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
-                                            last_telemetry(std::clock()), command_start(std::clock()) {
+                                            last_telemetry(std::clock()),
+                                            command_start(std::clock()), command(CMD_NONE) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
 }
@@ -121,6 +122,32 @@ void RoverControl::update_telemetry() {
 }
 
 void RoverControl::update_command() {
+    // Nothing to update if there isn't a command executing
+    if (this->command == CMD_NONE)
+        return;
+
+    switch (this->command) {
+        case CMD_FWD:
+        {
+            break;
+        }
+        case CMD_REV:
+        {
+            break;
+        }
+        case CMD_LEFT:
+        {
+            break;
+        }
+        case CMD_RIGHT:
+        {
+            break;
+        }
+        case CMD_NONE:
+        {
+            break;
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

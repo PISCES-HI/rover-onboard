@@ -2,11 +2,20 @@
 #define ROVER_CONTROL_H
 
 #include <ctime>
+#include <string>
 
 #include "dln/dln_generic.h"
 
 #include "PwmDriver.h"
 #include "Socket.h"
+
+enum Command {
+    CMD_FWD,
+    CMD_REV,
+    CMD_LEFT,
+    CMD_RIGHT,
+    CMD_NONE,
+};
 
 class RoverControl {
     public:
@@ -37,9 +46,11 @@ class RoverControl {
         int blade;
         bool brake;
 
-        // Timers for telemetry and commands
-        std::clock_t last_telemetry;
-        std::clock_t command_start;
+        std::clock_t last_telemetry; // Telemetry packet timer
+        std::string telemetry_bundle; // Bundle of telemetry packets
+
+        Command command;
+        std::clock_t command_start; // Command timer
 };
 
 #endif // ROVER_CONTROL_H
