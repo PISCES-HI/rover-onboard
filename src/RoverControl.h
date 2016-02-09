@@ -49,8 +49,9 @@ class RoverControl {
         std::clock_t last_telemetry; // Telemetry packet timer
         std::string telemetry_bundle; // Bundle of telemetry packets
 
-        Command command;
-        std::clock_t command_start; // Command timer
+        Command cmd;
+        std::clock_t cmd_start; // Command timer
+        double cmd_duration; // Command duration in seconds
 };
 
 #endif // ROVER_CONTROL_H
