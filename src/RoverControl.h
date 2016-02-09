@@ -49,7 +49,7 @@ class RoverControl {
         std::clock_t last_telemetry; // Telemetry packet timer
         std::string telemetry_bundle; // Bundle of telemetry packets
 
-        Command cmd;
+        Command cmd; // Command currently being executed, if any
         std::clock_t cmd_start; // Command timer
         double cmd_duration; // Command duration in seconds
 };
