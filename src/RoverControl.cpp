@@ -18,7 +18,8 @@ const int BRAKE_PIN = 6;
 RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
-                                            sadl(0.0), blade(0.0) {
+                                            sadl(0.0), blade(0.0),
+                                            last_telemetry(std::clock()), command_start(std::clock()) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
 }
@@ -109,6 +110,17 @@ void RoverControl::update() {
     } catch (SocketException e) {
         std::cout << "Failed to receive on socket: " << e.what() << std::endl;
     }
+}
+
+void RoverControl::update_telemetry() {
+    // Time since last update in seconds
+    double time_since_update = (std::clock()-this->last_telemetry)/(double)CLOCKS_PER_SEC;
+    if (time_since_update > 0.5) {
+        this->last_telemetry = std::clock();
+    }
+}
+
+void RoverControl::update_command() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

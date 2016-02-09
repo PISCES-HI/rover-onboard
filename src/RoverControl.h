@@ -1,6 +1,8 @@
 #ifndef ROVER_CONTROL_H
 #define ROVER_CONTROL_H
 
+#include <ctime>
+
 #include "dln/dln_generic.h"
 
 #include "PwmDriver.h"
@@ -13,6 +15,9 @@ class RoverControl {
         void update();
 
     private:
+        void update_telemetry();
+        void update_command();
+
         void set_cam_pan(float angle);
         void set_cam_tilt(float angle);
         void set_l_motor(int power);
@@ -31,6 +36,10 @@ class RoverControl {
         int sadl;
         int blade;
         bool brake;
+
+        // Timers for telemetry and commands
+        std::clock_t last_telemetry;
+        std::clock_t command_start;
 };
 
 #endif // ROVER_CONTROL_H
