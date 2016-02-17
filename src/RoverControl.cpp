@@ -33,7 +33,7 @@ void RoverControl::update() {
         uint16_t source_port;
         this->socket.recvFrom(buffer, 64, source_addr, source_port);
 
-        if ((char*)buffer == "connect me plz") {
+        if (strncmp((char*)buffer, "connect me plz", 14) == 0) {
             std::cout << source_addr << ":" << source_port << " has connected.\n";
             return;
         }
