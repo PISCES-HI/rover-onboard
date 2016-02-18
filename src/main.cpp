@@ -3,8 +3,8 @@
 #include "dln/dln.h"
 #include "dln/dln_generic.h"
 #include "dln/dln_gpio.h"
-//#include "dln/dln_i2c_master.h"
 
+#include "analog.h"
 #include "i2c.h"
 #include "PwmDriver.h"
 #include "RoverControl.h"
@@ -43,8 +43,9 @@ int main() {
     DlnGetDeviceId(handle, &id);
     std::cout << "Opened DLN device: " << sn << "\t" << id << std::endl;
 
-    // Initialize the i2c master
+    // Initialize all the things
     init_i2c(handle);
+    init_analog(handle);
 
     // Instantiate the rover controller
     RoverControl rover(handle);

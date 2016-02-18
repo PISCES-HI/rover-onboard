@@ -1,14 +1,15 @@
 CC=g++
 CFLAGS=-I./src/ -I./thirdparty/include
 LDFLAGS=-L/usr/local/lib -L/usr/local/Trolltech/Qt-4.8.7/lib/ -ldln -lQtCore
-OBJS=main.o analog.o i2c.o PwmDriver.o Socket.o RoverControl.o
+SRC_OBJS=analog.o i2c.o PwmDriver.o Socket.o RoverControl.o
+OBJS=main.o $(SRC_OBJS)
 
 all: bin/rover_onboard
 
 bin/rover_onboard: $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o bin/rover_onboard
 
-main.o: src/main.cpp src/PwmDriver.h src/PwmDriver.cpp src/i2c.h src/i2c.cpp
+main.o: src/main.cpp $(SRC_OBJS)
 	$(CC) $(CFLAGS) -c src/main.cpp
 
 analog.o: src/analog.cpp src/analog.h
