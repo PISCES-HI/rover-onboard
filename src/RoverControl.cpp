@@ -127,7 +127,7 @@ void RoverControl::update_command() {
         return;
 
     // Time since command start in seconds
-    double time_since_start = (std::clock()-this->command_start)/(double)CLOCKS_PER_SEC;
+    double time_since_start = (std::clock()-this->cmd_start)/(double)CLOCKS_PER_SEC;
     if (time_since_start > this->cmd_duration) {
         // Remaining command duration is 0, stop executing the command
     }
