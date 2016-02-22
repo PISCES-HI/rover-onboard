@@ -54,6 +54,8 @@ int main() {
         rover.update();
     }
 
+    cleanup_analog(handle);
+
     DlnCloseHandle(handle);
 
     DlnDisconnectAll();
