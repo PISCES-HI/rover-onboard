@@ -1,5 +1,7 @@
 #include "RoverControl.h"
 
+#include "dln/dln_adc.h"
+
 #include <iostream>
 #include <cstdio>
 #include <stdint.h>
@@ -38,6 +40,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
                                             tele_packet_timer(0.5),
+                                            tele_timer(0.25),
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
@@ -132,6 +135,13 @@ void RoverControl::update() {
 }
 
 void RoverControl::update_telemetry() {
+    if (this->tele_timer.tick()) {
+        // TODO read some telemetry data
+        uint16_t value;
+        DlnAdcGetValue(this->handle, 0, 0, &value);
+        printf("ADC value = %d\n", value);
+    }
+
     // Time to send telemetry packet bundle?
     if (this->tele_packet_timer.tick()) {
         // TODO send telemetry packet bundle
