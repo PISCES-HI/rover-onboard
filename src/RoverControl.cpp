@@ -15,11 +15,29 @@ const int SADL_PIN = 4;
 const int BLADE_PIN = 5;
 const int BRAKE_PIN = 6;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Timer::Timer(double c) : last_time(0) {
+    this->cooldown = static_cast<std::clock_t>(c*((double)CLOCKS_PER_SEC));
+}
+
+bool Timer::tick() {
+    std::clock_t cur_time = std::clock();
+    if (cur_time - this->last_time > this->cooldown) {
+        this->last_time = cur_time;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
-                                            last_telemetry(std::clock()),
+                                            tele_packet_timer(0.5),
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
@@ -114,10 +132,9 @@ void RoverControl::update() {
 }
 
 void RoverControl::update_telemetry() {
-    // Time since last update in seconds
-    double time_since_update = (std::clock()-this->last_telemetry)/(double)CLOCKS_PER_SEC;
-    if (time_since_update > 0.5) {
-        this->last_telemetry = std::clock();
+    // Time to send telemetry packet bundle?
+    if (this->tele_packet_timer.tick()) {
+        // TODO send telemetry packet bundle
     }
 }
 

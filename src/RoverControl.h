@@ -17,6 +17,15 @@ enum Command {
     CMD_NONE,
 };
 
+struct Timer {
+    // c is cooldown in seconds
+    Timer(double c);
+    bool tick();
+
+    std::clock_t last_time;
+    std::clock_t cooldown;
+};
+
 class RoverControl {
     public:
         RoverControl(HDLN& _handle);
@@ -46,7 +55,7 @@ class RoverControl {
         int blade;
         bool brake;
 
-        std::clock_t last_telemetry; // Telemetry packet timer
+        Timer tele_packet_timer; // Telemetry packet timer
         std::string telemetry_bundle; // Bundle of telemetry packets
 
         Command cmd; // Command currently being executed, if any
