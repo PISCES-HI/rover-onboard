@@ -9,13 +9,13 @@
 
 #include "util.h"
 
-const int L_MOTOR_PIN = 0;
+const int SADL_PIN = 0;
 const int R_MOTOR_PIN = 1;
-const int CAM_PAN_PIN = 2;
-const int CAM_TILT_PIN = 3;
-const int SADL_PIN = 4;
-const int BLADE_PIN = 5;
-const int BRAKE_PIN = 6;
+const int L_MOTOR_PIN = 2;
+const int BRAKE_PIN = 3;
+const int CAM_PAN_PIN = 4;
+const int CAM_TILT_PIN = 5;
+const int BLADE_PIN = 6;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

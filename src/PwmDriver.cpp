@@ -63,7 +63,7 @@ void PwmDriver::set_pwm_freq(HDLN handle, float freq) {
     usleep(5*1000); // Sleep for 5 milliseconds
     this->write8(handle, PCA9685_MODE1, oldmode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
                                             // This is why the beginTransmission below was not working.
-    //  Serial.print("Mode now 0x"); Serial.println(read8(PCA9685_MODE1), HEX);
+    // Serial.print("Mode now 0x"); Serial.println(read8(PCA9685_MODE1), HEX);
 }
 
 void PwmDriver::set_pwm(HDLN handle, uint8_t num, uint16_t on, uint16_t off) {
@@ -92,25 +92,20 @@ void PwmDriver::set_pin(HDLN handle, uint8_t num, uint16_t val, bool invert) {
         if (val == 0) {
             // Special value for signal fully on.
             this->set_pwm(handle, num, 4096, 0);
-        }
-        else if (val == 4095) {
+        } else if (val == 4095) {
             // Special value for signal fully off.
             this->set_pwm(handle, num, 0, 4096);
-        }
-        else {
+        } else {
             this->set_pwm(handle, num, 0, 4095-val);
         }
-    }
-    else {
+    } else {
         if (val == 4095) {
             // Special value for signal fully on.
             this->set_pwm(handle, num, 4096, 0);
-        }
-        else if (val == 0) {
+        } else if (val == 0) {
             // Special value for signal fully off.
             this->set_pwm(handle, num, 0, 4096);
-        }
-        else {
+        } else {
             this->set_pwm(handle, num, 0, val);
         }
     }
@@ -130,7 +125,7 @@ void PwmDriver::write8(HDLN handle, uint8_t addr, uint8_t data) {
     DLN_RESULT result = DlnI2cMasterWrite(handle,
                                           I2C_PORT,
                                           _i2c_addr,
-                                          1, addr, // i2c device internal address
+                                          1, addr,   // i2c device internal address
                                           1, &data); // data buffer
     if (DLN_FAILED(result)) {
         std::cout << "DlnI2cMasterWrite() error 0x" << std::hex << result << std::endl;
