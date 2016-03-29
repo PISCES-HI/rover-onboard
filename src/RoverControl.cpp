@@ -44,6 +44,8 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
+    set_l_motor(0);
+    set_r_motor(0);
 }
 
 void RoverControl::update() {
@@ -207,7 +209,8 @@ const int PWM_MOTOR_MIN = 186;
 const int PWM_MOTOR_MAX = 372;
 
 void RoverControl::set_l_motor(int power) {
-    int duty_cycle = map(power, -100, 100, PWM_MOTOR_MIN, PWM_MOTOR_MAX);
+    // NOTE: Left motor is a wonky, so has slightly different min/max values, and has directions flipped
+    int duty_cycle = map(-power, -100, 100, 157, 343);
     pwm.set_pin(this->handle, L_MOTOR_PIN, duty_cycle);
 }
 
