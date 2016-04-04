@@ -46,6 +46,10 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
     pwm.set_pwm_freq(handle, 50);
     set_l_motor(0);
     set_r_motor(0);
+    set_sadl(0);
+    set_brake(0);
+    set_cam_pan(90);
+    set_cam_tilt(130);
 }
 
 void RoverControl::update() {
