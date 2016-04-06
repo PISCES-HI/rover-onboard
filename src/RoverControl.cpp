@@ -103,7 +103,7 @@ void RoverControl::update() {
             {
                 // Tilt
                 sscanf((char*)buffer+1, "%f|", &this->fwd_cam_tilt);
-                this->set_cam_pan(this->fwd_cam_tilt);
+                this->set_cam_tilt(this->fwd_cam_tilt);
                 break;
             }
             case 'E':
