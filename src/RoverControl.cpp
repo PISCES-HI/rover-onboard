@@ -213,8 +213,8 @@ const int PWM_MOTOR_MIN = 186;
 const int PWM_MOTOR_MAX = 372;
 
 void RoverControl::set_l_motor(int power) {
-    // NOTE: Left motor is a wonky, so has slightly different min/max values, and has directions flipped
-    int duty_cycle = map(-power, -100, 100, 157, 343);
+    // NOTE: Left motor is wonky, so has slightly different min/max values, and has directions flipped
+    int duty_cycle = map(-power, -100, 100, 162, 348);
     pwm.set_pin(this->handle, L_MOTOR_PIN, duty_cycle);
 }
 
