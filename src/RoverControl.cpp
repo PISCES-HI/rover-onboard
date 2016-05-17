@@ -65,6 +65,7 @@ void RoverControl::update() {
 
         if (strncmp((char*)buffer, "connect me plz", 14) == 0) {
             std::cout << source_addr << ":" << source_port << " has connected.\n";
+            this->clients.push_back(Client(source_addr, source_port));
             return;
         }
 
@@ -151,11 +152,16 @@ void RoverControl::update_telemetry() {
         double motor_temp = get_thermistor_temp(value);
         //printf("ADC value = %d\n", value);
         std::cout << "Motor temp: " << motor_temp << std::endl;
+        this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(motor_temp)+"|";
     }
 
     // Time to send telemetry packet bundle?
     if (this->tele_packet_timer.tick()) {
-        // TODO send telemetry packet bundle
+        for (auto& client : this->clients) {
+            this->socket.sendTo(this->telemetry_bundle.c_str(), this->telemetry_bundle.size(),
+                                client.address, client.port);
+        }
+        this->telemetry_bundle.clear();
     }
 }
 

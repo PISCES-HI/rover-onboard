@@ -3,6 +3,7 @@
 
 #include <ctime>
 #include <string>
+#include <vector>
 
 #include "dln/dln_generic.h"
 
@@ -24,6 +25,12 @@ struct Timer {
 
     std::clock_t last_time;
     std::clock_t cooldown;
+};
+
+struct Client {
+    Client(const std::string& a, const unsigned short p) : address(a), port(p) { }
+    std::string address;
+    unsigned short port;
 };
 
 class RoverControl {
@@ -54,6 +61,8 @@ class RoverControl {
         int sadl;
         int blade;
         bool brake;
+
+        std::vector<Client> clients;
 
         Timer tele_packet_timer; // Telemetry packet timer
         std::string telemetry_bundle; // Bundle of telemetry packets

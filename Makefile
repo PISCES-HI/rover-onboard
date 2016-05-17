@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-I./src/ -I./thirdparty/include
+CFLAGS=-I./src/ -I./thirdparty/include -std=c++11
 LDFLAGS=-L/usr/local/lib -L/usr/local/Trolltech/Qt-4.8.7/lib/ -ldln -lQtCore
 SRC_OBJS=analog.o i2c.o PwmDriver.o Socket.o RoverControl.o thermistor.o
 OBJS=main.o $(SRC_OBJS)
