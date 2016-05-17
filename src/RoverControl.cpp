@@ -53,6 +53,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
 }
 
 void RoverControl::update() {
+    update_telemetry();
     try {
         // Read a datagram from a client on the server socket
         uint8_t buffer[64];
@@ -136,7 +137,7 @@ void RoverControl::update() {
             }
         }
     } catch (SocketException e) {
-        std::cout << "Failed to receive on socket: " << e.what() << std::endl;
+        //std::cout << "Failed to receive on socket: " << e.what() << std::endl;
     }
 }
 
