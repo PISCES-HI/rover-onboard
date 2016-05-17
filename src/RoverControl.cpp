@@ -1,13 +1,15 @@
 #include "RoverControl.h"
 
-#include "dln/dln_adc.h"
-
 #include <iostream>
 #include <cstdio>
 #include <stdint.h>
 #include <string>
 
+
+#include "dln/dln_adc.h"
+
 #include "util.h"
+#include "thermistor.h"
 
 const int SADL_PIN = 0;
 const int R_MOTOR_PIN = 1;
@@ -146,7 +148,9 @@ void RoverControl::update_telemetry() {
         // TODO read some telemetry data
         uint16_t value;
         DlnAdcGetValue(this->handle, 0, 0, &value);
-        printf("ADC value = %d\n", value);
+        double motor_temp = get_thermistor_temp(value);
+        //printf("ADC value = %d\n", value);
+        std::cout << "Motor temp: " << motor_temp << std::endl;
     }
 
     // Time to send telemetry packet bundle?
