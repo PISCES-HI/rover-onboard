@@ -102,3 +102,21 @@ void cleanup_analog(HDLN handle) {
     DlnAdcChannelDisable(handle, 0, 6);
     DlnAdcChannelDisable(handle, 0, 7);
 }
+
+float read_voltage(const uint16_t analog_reading, const float r1, const float r2) {
+    float scaled_reading = (((float)analog_reading) / 1024.f) * 5.f; // Normalize and scale by Vcc (5v)
+
+    return (scaled_reading / r2) * (r1 + r2);
+}
+
+float get_48v_voltage(const uint16_t analog_reading) {
+    return read_voltage(analog_reading, 17868.0, 950.0);
+}
+
+float get_12v_e_voltage(const uint16_t analog_reading) {
+    return read_voltage(analog_reading, 19890.0, 1899.0);
+}
+
+float get_12v_pl_voltage(const uint16_t analog_reading) {
+    return read_voltage(analog_reading, 19890.0, 1899.0);
+}
