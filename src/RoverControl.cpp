@@ -148,8 +148,17 @@ void RoverControl::update_telemetry() {
     if (this->tele_timer.tick()) {
         // TODO read some telemetry data
         uint16_t value;
-        DlnAdcGetValue(this->handle, 0, 0, &value);
+        DLN_RESULT result = DlnAdcGetValue(this->handle, 0, 0, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "FAIL1\n";
+        }
         double motor_temp = get_thermistor_temp(value);
+        std::cout << "48V bus: " << value << std::endl;
+        result = DlnAdcGetValue(this->handle, 1, 0, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "FAIL2\n";
+        }
+        std::cout << "48V bus: " << value << std::endl;
         //printf("ADC value = %d\n", value);
         std::cout << "Motor temp: " << motor_temp << std::endl;
         this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(motor_temp)+"|";
