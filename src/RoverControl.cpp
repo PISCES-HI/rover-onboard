@@ -149,22 +149,25 @@ void RoverControl::update_telemetry() {
     if (this->tele_timer.tick()) {
         // TODO read some telemetry data
         uint16_t value;
+
         DLN_RESULT result = DlnAdcGetValue(this->handle, 0, 0, &value);
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog port 0\n";
         }
         float voltage_48v = get_48v_voltage(value);
-        //double motor_temp = get_thermistor_temp(value);
-        /*std::cout << "48V bus: " << value << std::endl;
-        result = DlnAdcGetValue(this->handle, 1, 0, &value);
+        std::cout << value << std::endl;
+
+        result = DlnAdcGetValue(this->handle, 0, 1, &value);
         if (DLN_FAILED(result)) {
-            std::cout << "Failed to read analog port 1\n";
-        }*/
+            std::cout << "Failed to read analog port 1: " << result << std::endl;
+        }
+        double motor_temp = get_thermistor_temp(value);
+        std::cout << value << std::endl;
         //std::cout << "48V bus: " << value << std::endl;
         //printf("ADC value = %d\n", value);
-        //std::cout << "Motor temp: " << motor_temp << std::endl;
         //this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(motor_temp)+"|";
         std::cout << "48v: " << voltage_48v << std::endl;
+        std::cout << "Motor temp: " << motor_temp << std::endl;
         this->telemetry_bundle += "VOLT:"+std::to_string(voltage_48v)+":0.0:0.0:0.0"+"|";
     }
 
