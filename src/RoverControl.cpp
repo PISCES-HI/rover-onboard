@@ -147,25 +147,46 @@ void RoverControl::update() {
 
 void RoverControl::update_telemetry() {
     if (this->tele_timer.tick()) {
-        // TODO read some telemetry data
+        // Read telemetry data
+
         uint16_t value;
 
         DLN_RESULT result = DlnAdcGetValue(this->handle, 0, 0, &value);
         if (DLN_FAILED(result)) {
-            std::cout << "Failed to read analog port 0\n";
+            std::cout << "Failed to read analog channel 0\n";
         }
         float voltage_48v = get_48v_voltage(value);
-        std::cout << value << std::endl;
 
         result = DlnAdcGetValue(this->handle, 0, 1, &value);
         if (DLN_FAILED(result)) {
-            std::cout << "Failed to read analog port 1: " << result << std::endl;
+            std::cout << "Failed to read analog channel 1: " << result << std::endl;
         }
         double motor_temp = get_thermistor_temp(value);
-        std::cout << value << std::endl;
-        //std::cout << "48V bus: " << value << std::endl;
-        //printf("ADC value = %d\n", value);
-        //this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(motor_temp)+"|";
+
+        result = DlnAdcGetValue(this->handle, 0, 2, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "Failed to read analog channel 2: " << result << std::endl;
+        }
+        std::cout << "Right motor amp: " << value << std::endl;
+
+        result = DlnAdcGetValue(this->handle, 0, 3, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "Failed to read analog channel 3: " << result << std::endl;
+        }
+        std::cout << "Left motor amp: " << value << std::endl;
+
+        result = DlnAdcGetValue(this->handle, 0, 6, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "Failed to read analog channel 6: " << result << std::endl;
+        }
+        std::cout << "24v amp: " << value << std::endl;
+
+        result = DlnAdcGetValue(this->handle, 0, 4, &value);
+        if (DLN_FAILED(result)) {
+            std::cout << "Failed to read analog channel 4: " << result << std::endl;
+        }
+        std::cout << "12v e amp: " << value << std::endl;
+
         std::cout << "48v: " << voltage_48v << std::endl;
         std::cout << "Motor temp: " << motor_temp << std::endl;
         this->telemetry_bundle += "VOLT:"+std::to_string(voltage_48v)+":0.0:0.0:0.0"+"|";
