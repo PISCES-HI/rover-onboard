@@ -11,4 +11,7 @@ float get_48v_voltage(const uint16_t analog_reading);
 float get_12v_e_voltage(const uint16_t analog_reading);
 float get_12v_pl_voltage(const uint16_t analog_reading);
 
+float get_avionics_temperature(const uint16_t analog_reading);
+float get_ambient_temperature(const uint16_t analog_reading);
+
 #endif // ANALOG_H

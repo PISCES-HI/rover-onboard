@@ -161,7 +161,7 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 1: " << result << std::endl;
         }
-        double motor_temp = get_thermistor_temp(value);
+        double l_motor_temp = get_thermistor_temp(value);
 
         result = DlnAdcGetValue(this->handle, 0, 2, &value);
         if (DLN_FAILED(result)) {
@@ -185,11 +185,17 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 4: " << result << std::endl;
         }
-        std::cout << "12v e amp: " << value << std::endl;
+        std::cout << "temp: " << value << std::endl;
+        std::cout << "temp: " << get_ambient_temperature(value) << std::endl;
+        //float upper_avionics_temp = get_avionics_temperature(value);
+        float ambient_temp = get_ambient_temperature(value);
 
         std::cout << "48v: " << voltage_48v << std::endl;
-        std::cout << "Motor temp: " << motor_temp << std::endl;
+        std::cout << "L motor temp: " << l_motor_temp << std::endl;
         this->telemetry_bundle += "VOLT:"+std::to_string(voltage_48v)+":0.0:0.0:0.0"+"|";
+        this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(l_motor_temp)+"|";
+        //this->telemetry_bundle += "UPR_A_TEMP:"+std::to_string(upper_avionics_temp)+"|";
+        this->telemetry_bundle += "AMBIENT_TEMP:"+std::to_string(ambient_temp)+"|";
     }
 
     // Time to send telemetry packet bundle?
@@ -262,7 +268,7 @@ const int PWM_MOTOR_MAX = 372;
 
 void RoverControl::set_l_motor(int power) {
     // NOTE: Left motor is wonky, so has slightly different min/max values, and has directions flipped
-    int duty_cycle = map(-power, -100, 100, 162, 348);
+    int duty_cycle = map(-power, -100, 100, 157, 344);
     pwm.set_pin(this->handle, L_MOTOR_PIN, duty_cycle);
 }
 
