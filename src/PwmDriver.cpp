@@ -69,7 +69,9 @@ void PwmDriver::set_pwm_freq(HDLN handle, float freq) {
 void PwmDriver::set_pwm(HDLN handle, uint8_t num, uint16_t on, uint16_t off) {
     //Serial.print("Setting PWM "); Serial.print(num); Serial.print(": "); Serial.print(on); Serial.print("->"); Serial.println(off);
 
-    uint8_t data[] = { on, on>>8, off, off>>8 };
+    uint8_t data[4];
+    *((uint16_t*)&data[0]) = on;
+    *((uint16_t*)&data[2]) = off;
 
     DLN_RESULT result = DlnI2cMasterWrite(handle,
                                           I2C_PORT,
