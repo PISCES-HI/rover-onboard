@@ -47,6 +47,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             tele_timer(0.25),
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
     adxl.initialize();
+    adxl.setOffsetZ(7);
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
     set_l_motor(0);
@@ -199,7 +200,14 @@ void RoverControl::update_telemetry() {
         //this->telemetry_bundle += "UPR_A_TEMP:"+std::to_string(upper_avionics_temp)+"|";
         this->telemetry_bundle += "AMBIENT_TEMP:"+std::to_string(ambient_temp)+"|";
 
-        std::cout << this->adxl.testConnection() << std::endl;
+        std::cout << "X accel: " << this->adxl.getAccelerationX() << std::endl;
+        std::cout << "Y accel: " << this->adxl.getAccelerationY() << std::endl;
+        std::cout << "Z accel: " << this->adxl.getAccelerationZ() << std::endl;
+
+        this->telemetry_bundle += "IMU:"+std::to_string(this->adxl.getAccelerationX())+":"
+                                        +std::to_string(this->adxl.getAccelerationY())+":"
+                                        +std::to_string(this->adxl.getAccelerationZ())+":"
+                                        +"0:0:0:0:0:0"+"|";
     }
 
     // Time to send telemetry packet bundle?
