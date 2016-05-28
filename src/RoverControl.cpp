@@ -39,12 +39,14 @@ bool Timer::tick() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
+                                            adxl(_handle),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
                                             tele_packet_timer(0.5),
                                             tele_timer(0.25),
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
+    adxl.initialize();
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
     set_l_motor(0);
@@ -196,6 +198,8 @@ void RoverControl::update_telemetry() {
         this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(l_motor_temp)+"|";
         //this->telemetry_bundle += "UPR_A_TEMP:"+std::to_string(upper_avionics_temp)+"|";
         this->telemetry_bundle += "AMBIENT_TEMP:"+std::to_string(ambient_temp)+"|";
+
+        std::cout << this->adxl.testConnection() << std::endl;
     }
 
     // Time to send telemetry packet bundle?
