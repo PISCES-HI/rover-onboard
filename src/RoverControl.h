@@ -8,6 +8,7 @@
 #include "dln/dln_generic.h"
 
 #include "AdxlDriver.h"
+#include "Hmc5883lDriver.h"
 #include "PwmDriver.h"
 #include "Socket.h"
 
@@ -55,6 +56,7 @@ class RoverControl {
         HDLN& handle;
         UDPSocket socket;
         AdxlDriver adxl;
+        Hmc5883lDriver mag;
         PwmDriver pwm;
         float fwd_cam_pan;
         float fwd_cam_tilt;

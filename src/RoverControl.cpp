@@ -40,6 +40,7 @@ bool Timer::tick() {
 
 RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
                                             adxl(_handle),
+                                            mag(_handle),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
@@ -204,10 +205,17 @@ void RoverControl::update_telemetry() {
         std::cout << "Y accel: " << this->adxl.getAccelerationY() << std::endl;
         std::cout << "Z accel: " << this->adxl.getAccelerationZ() << std::endl;
 
+        std::cout << "X heading: " << this->mag.getHeadingX() << std::endl;
+        std::cout << "Y heading: " << this->mag.getHeadingY() << std::endl;
+        std::cout << "Z heading: " << this->mag.getHeadingZ() << std::endl;
+
         this->telemetry_bundle += "IMU:"+std::to_string(this->adxl.getAccelerationX())+":"
                                         +std::to_string(this->adxl.getAccelerationY())+":"
                                         +std::to_string(this->adxl.getAccelerationZ())+":"
-                                        +"0:0:0:0:0:0"+"|";
+                                        +"0:0:0:"
+                                        +std::to_string(this->mag.getHeadingX())+":"
+                                        +std::to_string(this->mag.getHeadingY())+":"
+                                        +std::to_string(this->mag.getHeadingZ())+"|";
     }
 
     // Time to send telemetry packet bundle?
