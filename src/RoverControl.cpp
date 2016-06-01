@@ -49,6 +49,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             cmd_start(std::clock()), cmd(CMD_NONE) {
     adxl.initialize();
     adxl.setOffsetZ(7);
+    mag.initialize();
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
     set_l_motor(0);
