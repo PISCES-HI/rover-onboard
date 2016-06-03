@@ -41,6 +41,7 @@ bool Timer::tick() {
 RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 30001),
                                             adxl(_handle),
                                             mag(_handle),
+                                            barometer(_handle),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
                                             sadl(0.0), blade(0.0),
@@ -50,6 +51,8 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
     adxl.initialize();
     adxl.setOffsetZ(7);
     mag.initialize();
+    barometer.initialize();
+    barometer.setControl(BMP085_MODE_PRESSURE_3);
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
     set_l_motor(0);
@@ -217,6 +220,10 @@ void RoverControl::update_telemetry() {
                                         +std::to_string(this->mag.getHeadingX())+":"
                                         +std::to_string(this->mag.getHeadingY())+":"
                                         +std::to_string(this->mag.getHeadingZ())+"|";
+
+        float pressure = barometer.getPressure();
+        float altitude = barometer.getAltitude(pressure);
+        this->telemetry_bundle += "W_PR_ALT:"+std::to_string(pressure)+":"+std::to_string(altitude)+"|";
     }
 
     // Time to send telemetry packet bundle?

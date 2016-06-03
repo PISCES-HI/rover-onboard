@@ -35,12 +35,6 @@ const uint8_t BMP085_RA_MSB =     0xF6;    // MSB
 const uint8_t BMP085_RA_LSB =     0xF7;    // LSB
 const uint8_t BMP085_RA_XLSB =    0xF8;    // XLSB
 
-const uint8_t BMP085_MODE_TEMPERATURE = 0x2E;
-const uint8_t BMP085_MODE_PRESSURE_0 =  0x34;
-const uint8_t BMP085_MODE_PRESSURE_1 =  0x74;
-const uint8_t BMP085_MODE_PRESSURE_2 =  0xB4;
-const uint8_t BMP085_MODE_PRESSURE_3 =  0xF4;
-
 Bmp085Driver::Bmp085Driver(HDLN handle, uint8_t addr) : _handle(handle), _i2c_addr(addr) { }
 
 /**

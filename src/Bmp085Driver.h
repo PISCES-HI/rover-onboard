@@ -5,6 +5,12 @@
 
 #define BMP085_ADDRESS 0x77 // this device only has one address
 
+const uint8_t BMP085_MODE_TEMPERATURE = 0x2E;
+const uint8_t BMP085_MODE_PRESSURE_0 =  0x34;
+const uint8_t BMP085_MODE_PRESSURE_1 =  0x74;
+const uint8_t BMP085_MODE_PRESSURE_2 =  0xB4;
+const uint8_t BMP085_MODE_PRESSURE_3 =  0xF4;
+
 class Bmp085Driver {
     public:
         Bmp085Driver(HDLN handle, uint8_t addr = BMP085_ADDRESS);
