@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-I./src/ -I./thirdparty/include -std=c++11
 LDFLAGS=-L/usr/local/lib -L/usr/local/Trolltech/Qt-4.8.7/lib/ -ldln -lQtCore
-SRC_OBJS=AdxlDriver.o analog.o Bmp085Driver.o Hmc5883lDriver.o i2c.o PwmDriver.o Socket.o RoverControl.o thermistor.o
+SRC_OBJS=AdxlDriver.o analog.o Bmp085Driver.o Hmc5883lDriver.o i2c.o PwmDriver.o Socket.o RoverControl.o Serial.o thermistor.o
 OBJS=main.o $(SRC_OBJS)
 
 all: bin/rover_onboard
@@ -35,6 +35,9 @@ Socket.o: src/Socket.cpp src/Socket.h
 
 RoverControl.o: src/RoverControl.cpp src/RoverControl.h src/analog.h src/thermistor.h src/util.h
 	$(CC) $(CFLAGS) -c src/RoverControl.cpp
+
+Serial.o: src/Serial.cpp src/Serial.h
+	$(CC) $(CFLAGS) -c src/Serial.cpp
 
 thermistor.o: src/thermistor.cpp src/thermistor.h
 	$(CC) $(CFLAGS) -c src/thermistor.cpp
