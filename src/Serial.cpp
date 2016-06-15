@@ -33,8 +33,8 @@ size_t Serial::write_buffer(const char* buffer, size_t len) {
 
 size_t Serial::writeln(const char* line) {
     size_t n = this->write_buffer(line, strlen(line));
-    size_t n_newline = this->write_buffer("\n", 1);
-    return n + n_newline;
+    //size_t n_newline = this->write_buffer("\n", 1);
+    return n /*+ n_newline*/;
 }
 
 int Serial::set_interface_attribs(int speed, int parity) {
@@ -66,6 +66,10 @@ int Serial::set_interface_attribs(int speed, int parity) {
     tty.c_cflag &= ~CSTOPB;
     tty.c_cflag &= ~CRTSCTS;
 
+    //cfmakeraw(&tty);
+
+    // Flush Port, then applies attributes
+    //tcflush(fd, TCIFLUSH);
     if (tcsetattr(fd, TCSANOW, &tty) != 0) {
         std::cerr << "error " << errno << " from tcsetattr\n";
         return -1;

@@ -22,6 +22,8 @@ int main() {
     // Set the update rate
     gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
 
+    gps.sendCommand(PGCMD_ANTENNA);
+
     // Ask for firmware version
     gps.sendCommand(PMTK_Q_RELEASE);
 
@@ -82,8 +84,6 @@ int main() {
 
 void gps_loop(GpsDriver& gps) {
     char c = gps.read();
-    
-    std::cout << c << std::endl;
 
     if (c) std::cout << c << std::endl;
 
