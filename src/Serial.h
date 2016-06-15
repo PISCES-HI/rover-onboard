@@ -6,7 +6,7 @@
 
 class Serial {
     public:
-        Serial(char* port_name, int baud = B9600);
+        Serial(const char* port_name, int baud = B9600);
 
         size_t read_buffer(char* buffer, size_t len);
         size_t write_buffer(const char* buffer, size_t len);

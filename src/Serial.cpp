@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-Serial::Serial(char* port_name, int baud) {
+Serial::Serial(const char* port_name, int baud) {
     fd = open(port_name, O_RDWR | O_NOCTTY | O_SYNC);
     if (fd < 0) {
         std::cerr << "error " << errno << " opening " << port_name << ": " << strerror(errno) << std::endl;
