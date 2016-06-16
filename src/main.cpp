@@ -15,7 +15,7 @@
 void gps_loop(GpsDriver& gps);
 
 int main() {
-    GpsDriver gps(Serial("/dev/ttyUSB0"));
+    /*GpsDriver gps(Serial("/dev/ttyUSB0"));
 
     gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
 
@@ -27,7 +27,7 @@ int main() {
     // Ask for firmware version
     gps.sendCommand(PMTK_Q_RELEASE);
 
-    while (true) gps_loop(gps);
+    while (true) gps_loop(gps);*/
 
     DLN_RESULT result;
 

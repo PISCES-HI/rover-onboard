@@ -18,7 +18,9 @@ const int L_MOTOR_PIN = 2;
 const int BRAKE_PIN = 3;
 const int CAM_PAN_PIN = 4;
 const int CAM_TILT_PIN = 5;
-const int BLADE_PIN = 6;
+const int STEREO_CAM_PAN_PIN = 6;
+const int STEREO_CAM_TILT_PIN = 7;
+const int BLADE_PIN = 8;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,7 +45,8 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             mag(_handle),
                                             barometer(_handle),
                                             l_motor(0.0), r_motor(0.0),
-                                            fwd_cam_pan(0.0), fwd_cam_tilt(0.0),
+                                            fwd_cam_pan(90.0), fwd_cam_tilt(130.0),
+                                            stereo_cam_pan(90.0), stereo_cam_tilt(90.0),
                                             sadl(0.0), blade(0.0),
                                             tele_packet_timer(0.5),
                                             tele_timer(0.25),
@@ -61,6 +64,9 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
     set_brake(0);
     set_cam_pan(90);
     set_cam_tilt(130);
+
+    set_stereo_cam_pan(90);
+    set_stereo_cam_tilt(90);
 }
 
 void RoverControl::update() {
@@ -142,6 +148,20 @@ void RoverControl::update() {
                 this->set_blade(this->brake);
                 break;
             }
+            case 'I':
+            {
+                // Stereo Pan
+                sscanf((char*)buffer+1, "%f|", &this->stereo_cam_pan);
+                this->set_stereo_cam_pan(this->stereo_cam_pan);
+                break;
+            }
+            case 'J':
+            {
+                // Stereo Tilt
+                sscanf((char*)buffer+1, "%f|", &this->stereo_cam_tilt);
+                this->set_stereo_cam_tilt(this->stereo_cam_tilt);
+                break;
+            }
             case 'Z':
             {
                 // Text command
@@ -193,8 +213,8 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 4: " << result << std::endl;
         }
-        std::cout << "temp: " << value << std::endl;
-        std::cout << "temp: " << get_ambient_temperature(value) << std::endl;
+        std::cout << "ambient temp: " << value << std::endl;
+        std::cout << "ambient temp: " << get_ambient_temperature(value) << std::endl;
         //float upper_avionics_temp = get_avionics_temperature(value);
         float ambient_temp = get_ambient_temperature(value);
 
@@ -286,6 +306,16 @@ void RoverControl::set_cam_pan(float angle) {
 void RoverControl::set_cam_tilt(float angle) {
     int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MIN, PWM_SERVO_MAX);
     pwm.set_pin(this->handle, CAM_TILT_PIN, duty_cycle);
+}
+
+void RoverControl::set_stereo_cam_pan(float angle) {
+    int duty_cycle = map(angle, 0.0, 180.0, 125, 425);
+    pwm.set_pin(this->handle, STEREO_CAM_PAN_PIN, duty_cycle);
+}
+
+void RoverControl::set_stereo_cam_tilt(float angle) {
+    int duty_cycle = map(angle, 0.0, 180.0, PWM_SERVO_MIN, PWM_SERVO_MAX);
+    pwm.set_pin(this->handle, STEREO_CAM_TILT_PIN, duty_cycle);
 }
 
 ////////////////////////

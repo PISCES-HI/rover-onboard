@@ -48,6 +48,8 @@ class RoverControl {
 
         void set_cam_pan(float angle);
         void set_cam_tilt(float angle);
+        void set_stereo_cam_pan(float angle);
+        void set_stereo_cam_tilt(float angle);
         void set_l_motor(int power);
         void set_r_motor(int power);
         void set_sadl(int power);
@@ -62,6 +64,8 @@ class RoverControl {
         PwmDriver pwm;
         float fwd_cam_pan;
         float fwd_cam_tilt;
+        float stereo_cam_pan;
+        float stereo_cam_tilt;
         int l_motor;
         int r_motor;
         int sadl;

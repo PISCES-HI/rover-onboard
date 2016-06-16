@@ -112,16 +112,16 @@ float get_12v_pl_voltage(const uint16_t analog_reading) {
 }
 
 float get_avionics_temperature(const uint16_t analog_reading) {
-    // Get voltage (between 0 and 5v)
-    float voltage = (float(analog_reading)/1023.0) * 5.0;
+    // Get voltage (between 0 and 4.5v)
+    float voltage = (float(analog_reading)/1023.0) * 4.5;
     // 9.8mv per degree and offset by -30 C
     return ((voltage * 1000.0) / 9.8) - 30.0;
 }
 
 
 float get_ambient_temperature(const uint16_t analog_reading) {
-    // Get voltage (between 0 and 5v)
-    float voltage = (float(analog_reading)/1023.0) * 5.0;
+    // Get voltage (between 0 and 4.5v)
+    float voltage = (float(analog_reading)/1023.0) * 4.5;
     // 9.8mv per degree and offset by -15 C
     return ((voltage * 1000.0) / 9.8) - 15.0;
 }
