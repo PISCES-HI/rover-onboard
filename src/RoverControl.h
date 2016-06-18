@@ -9,6 +9,7 @@
 
 #include "AdxlDriver.h"
 #include "Bmp085Driver.h"
+#include "GpsDriver.h"
 #include "Hmc5883lDriver.h"
 #include "PwmDriver.h"
 #include "Socket.h"
@@ -61,6 +62,7 @@ class RoverControl {
         AdxlDriver adxl;
         Bmp085Driver barometer;
         Hmc5883lDriver mag;
+        GpsDriver gps;
         PwmDriver pwm;
         float fwd_cam_pan;
         float fwd_cam_tilt;

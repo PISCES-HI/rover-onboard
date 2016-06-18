@@ -44,6 +44,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             adxl(_handle),
                                             mag(_handle),
                                             barometer(_handle),
+                                            gps(Serial("/dev/ttyUSB0")),
                                             l_motor(0.0), r_motor(0.0),
                                             fwd_cam_pan(90.0), fwd_cam_tilt(130.0),
                                             stereo_cam_pan(90.0), stereo_cam_tilt(90.0),
@@ -56,8 +57,14 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
     mag.initialize();
     barometer.initialize();
     barometer.setControl(BMP085_MODE_PRESSURE_3);
+
+    // Initialize GPS
+    gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+    gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
+
     pwm.begin(handle);
     pwm.set_pwm_freq(handle, 50);
+
     set_l_motor(0);
     set_r_motor(0);
     set_sadl(0);
@@ -174,6 +181,12 @@ void RoverControl::update() {
 }
 
 void RoverControl::update_telemetry() {
+    // Update GPS
+    gps.read();
+    if (gps.newNMEAreceived() && gps.parse(gps.lastNMEA())) {
+        std::cout << "Got GPS data\n";
+    }
+
     if (this->tele_timer.tick()) {
         // Read telemetry data
 
