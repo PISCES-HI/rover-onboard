@@ -184,7 +184,14 @@ void RoverControl::update_telemetry() {
     // Update GPS
     gps.read();
     if (gps.newNMEAreceived() && gps.parse(gps.lastNMEA())) {
-        std::cout << "Got GPS data\n";
+        if (gps.fix) {
+            // GPS:<latitude>:<longitude>:<speed>:<altitude>:<angle>
+            this->telemetry_bundle += "GPS:"+std::to_string(this->gps.lat)+":"
+                                      +std::to_string(this->gps.lon)+":"
+                                      +std::to_string(this->gps.speed)+":"
+                                      +std::to_string(this->gps.altitude)+":"
+                                      +std::to_string(this->gps.angle)+"|";
+        }
     }
 
     if (this->tele_timer.tick()) {

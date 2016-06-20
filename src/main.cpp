@@ -12,23 +12,7 @@
 #include "Serial.h"
 #include "GpsDriver.h"
 
-void gps_loop(GpsDriver& gps);
-
 int main() {
-    /*GpsDriver gps(Serial("/dev/ttyUSB0"));
-
-    gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-
-    // Set the update rate
-    gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
-
-    gps.sendCommand(PGCMD_ANTENNA);
-
-    // Ask for firmware version
-    gps.sendCommand(PMTK_Q_RELEASE);
-
-    while (true) gps_loop(gps);*/
-
     DLN_RESULT result;
 
     DlnConnect("localhost", DLN_DEFAULT_SERVER_PORT);
@@ -80,43 +64,4 @@ int main() {
     DlnDisconnectAll();
 
     return 0;
-}
-
-void gps_loop(GpsDriver& gps) {
-    char c = gps.read();
-
-    if (c) std::cout << c << std::endl;
-
-    // if a sentence is received, we can check the checksum, parse it...
-    if (gps.newNMEAreceived()) {
-        // a tricky thing here is if we print the NMEA sentence, or data
-        // we end up not listening and catching other sentences! 
-        // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-        //Serial.println(gps.lastNMEA());   // this also sets the newNMEAreceived() flag to false
-
-        if (!gps.parse(gps.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
-            return;  // we can fail to parse a sentence in which case we should just wait for another
-
-        std::cout << "\nTime: ";
-        std::cout << gps.hour; std::cout << ':';
-        std::cout << gps.minute; std::cout << ':';
-        std::cout << gps.seconds; std::cout << '.';
-        std::cout << gps.milliseconds << std::endl;
-        std::cout << "Date: ";
-        std::cout << gps.day; std::cout << '/';
-        std::cout << gps.month; std::cout << "/20";
-        std::cout << gps.year << std::endl;
-        std::cout << "Fix: "; std::cout << (int)gps.fix;
-        std::cout << " quality: "; std::cout << (int)gps.fixquality << std::endl; 
-        if (gps.fix) {
-            std::cout << "Location: ";
-            std::cout << gps.latitude; std::cout << gps.lat;
-            std::cout << ", "; 
-            std::cout << gps.longitude; std::cout << gps.lon << std::endl;     
-            std::cout << "Speed (knots): "; std::cout << gps.speed << std::endl;
-            std::cout << "Angle: "; std::cout << gps.angle << std::endl;
-            std::cout << "Altitude: "; std::cout << gps.altitude << std::endl;
-            std::cout << "Satellites: "; std::cout << (int)gps.satellites << std::endl;
-        }
-    }
 }
