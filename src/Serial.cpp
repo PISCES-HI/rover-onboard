@@ -19,15 +19,17 @@ Serial::Serial(const char* port_name, int baud) {
 
 size_t Serial::read_buffer(char* buffer, size_t len) {
     ssize_t n = read(fd, buffer, len);
-    if (n == -1) // Error occurred
-        std::cerr << "Error reading serial\n";
+    if (n == -1) { // Error occurred
+        // std::cerr << "Error reading serial\n";
+    }
     return n;
 }
 
 size_t Serial::write_buffer(const char* buffer, size_t len) {
     ssize_t n = write(fd, buffer, len);
-    if (n == -1) // Error occurred
-        std::cerr << "Error writing serial\n";
+    if (n == -1) { // Error occurred
+        // std::cerr << "Error writing serial\n";
+    }
     return n;
 }
 
