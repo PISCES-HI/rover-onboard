@@ -19,12 +19,19 @@ enum Command {
     CMD_REV,
     CMD_LEFT,
     CMD_RIGHT,
-    CMD_NONE,
+    CMD_NONE
+};
+
+enum PanoramaState {
+    WAIT_MOVE,
+    WAIT_PHOTO
 };
 
 struct Timer {
     // c is cooldown in seconds
     Timer(double c);
+    void set_cooldown(double c);
+    void reset();
     bool tick();
 
     std::clock_t last_time;
@@ -57,6 +64,8 @@ class RoverControl {
         void set_blade(int power);
         void set_brake(bool on);
         void stereo_snapshot();
+        void start_stereo_panorama();
+        void update_stereo_panorama();
 
         HDLN& handle;
         UDPSocket socket;
@@ -85,6 +94,11 @@ class RoverControl {
         Command cmd; // Command currently being executed, if any
         std::clock_t cmd_start; // Command timer
         double cmd_duration; // Command duration in seconds
+
+        bool taking_panorama;
+        unsigned int panorama_pos;
+        PanoramaState panorama_state;
+        Timer panorama_timer;
 };
 
 #endif // ROVER_CONTROL_H

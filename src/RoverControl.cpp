@@ -28,6 +28,14 @@ Timer::Timer(double c) : last_time(0) {
     this->cooldown = static_cast<std::clock_t>(c*((double)CLOCKS_PER_SEC));
 }
 
+void Timer::set_cooldown(double c) {
+    this->cooldown = static_cast<std::clock_t>(c*((double)CLOCKS_PER_SEC));
+}
+
+void Timer::reset() {
+    this->last_time = std::clock();
+}
+
 bool Timer::tick() {
     std::clock_t cur_time = std::clock();
     if (cur_time - this->last_time > this->cooldown) {
@@ -51,7 +59,8 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
                                             sadl(0.0), blade(0.0),
                                             tele_packet_timer(0.5),
                                             tele_timer(0.25),
-                                            cmd_start(std::clock()), cmd(CMD_NONE) {
+                                            cmd_start(std::clock()), cmd(CMD_NONE),
+                                            taking_panorama(false), panorama_timer(0.5) {
     adxl.initialize();
     adxl.setOffsetZ(7);
     mag.initialize();
@@ -78,6 +87,7 @@ RoverControl::RoverControl(HDLN& _handle) : handle(_handle), socket("0.0.0.0", 3
 
 void RoverControl::update() {
     update_telemetry();
+    update_stereo_panorama();
     try {
         // Read a datagram from a client on the server socket
         uint8_t buffer[64];
@@ -172,6 +182,10 @@ void RoverControl::update() {
             case 'K':
             {
                 this->stereo_snapshot();
+            }
+            case 'L':
+            {
+                this->start_stereo_panorama();
             }
             case 'Z':
             {
@@ -377,10 +391,6 @@ void RoverControl::set_brake(bool on) {
 void RoverControl::stereo_snapshot() {
     time_t t = time(0);
     tm* now = localtime(&t);
-    cout << (now->tm_year + 1900) << '-' 
-         << (now->tm_mon + 1) << '-'
-         <<  now->tm_mday
-         << endl;
 
     std::string date_time = std::to_string(now->tm_year + 1900) + "-"
                             + std::to_string(now->tm_mon + 1) + "-"
@@ -390,4 +400,96 @@ void RoverControl::stereo_snapshot() {
 
     system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") + date_time + "_L.jpg").c_str());
     system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") + date_time + "_R.jpg").c_str());
+}
+
+void RoverControl::start_stereo_panorama() {
+    this->taking_panorama = true;
+    this->panorama_pos = 0;
+    this->panorama_state = WAIT_MOVE;
+    this->panorama_timer.set_cooldown(0.5);
+    this->panorama_timer.reset();
+}
+
+void RoverControl::update_stereo_panorama() {
+    if (!this->taking_panorama) return;
+
+    if (this->panorama_timer.tick()) {
+        switch (this->panorama_state) {
+            WAIT_MOVE:
+            {
+                time_t t = time(0);
+                tm* now = localtime(&t);
+
+                std::string date_time = std::to_string(now->tm_year + 1900) + "-"
+                                        + std::to_string(now->tm_mon + 1) + "-"
+                                        + std::to_string(now->tm_mday) + "-"
+                                        + std::to_string(now->tm_min) + ":"
+                                        + std::to_string(now->tm_sec);
+                std::string pos_str = std::to_string(this->panorama_pos);
+
+                system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") +
+                                    date_time + "_" + pos_str + "_L.jpg").c_str());
+                system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") +
+                                    date_time + "_" + pos_str + "_R.jpg").c_str());
+
+                // TODO: take photo
+
+                this->panorama_state = WAIT_PHOTO;
+                this->panorama_timer.set_cooldown(1.0);
+                break;
+            }
+            WAIT_PHOTO:
+            {
+                if (this->panorama_pos == 6) {
+                    // Done taking a panorama
+                    this->taking_panorama = false;
+                    return;
+                }
+                
+                switch (this->panorama_pos) {
+                    case 0:
+                    {
+                        this->set_stereo_cam_pan(10.0);
+                        this->set_stereo_cam_tilt(60.0);
+                        break;
+                    }
+                    case 1:
+                    {
+                        this->set_stereo_cam_pan(90.0);
+                        this->set_stereo_cam_tilt(60.0);
+                        break;
+                    }
+                    case 2:
+                    {
+                        this->set_stereo_cam_pan(170.0);
+                        this->set_stereo_cam_tilt(60.0);
+                        break;
+                    }
+                    case 3:
+                    {
+                        this->set_stereo_cam_pan(170.0);
+                        this->set_stereo_cam_tilt(120.0);
+                        break;
+                    }
+                    case 4:
+                    {
+                        this->set_stereo_cam_pan(90.0);
+                        this->set_stereo_cam_tilt(120.0);
+                        break;
+                    }
+                    case 5:
+                    {
+                        this->set_stereo_cam_pan(10.0);
+                        this->set_stereo_cam_tilt(120.0);
+                        break;
+                    }
+                }
+
+                this->panorama_pos += 1;
+                this->panorama_state = WAIT_MOVE;
+                this->panorama_timer.set_cooldown(0.5);
+                break;
+            }
+        }
+    }
 }
