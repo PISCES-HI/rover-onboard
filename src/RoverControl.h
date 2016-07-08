@@ -56,6 +56,7 @@ class RoverControl {
         void set_sadl(int power);
         void set_blade(int power);
         void set_brake(bool on);
+        void stereo_snapshot();
 
         HDLN& handle;
         UDPSocket socket;

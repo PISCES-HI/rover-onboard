@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <stdint.h>
 #include <string>
-
+#include <ctime>
 
 #include "dln/dln_adc.h"
 
@@ -168,6 +168,10 @@ void RoverControl::update() {
                 sscanf((char*)buffer+1, "%f|", &this->stereo_cam_tilt);
                 this->set_stereo_cam_tilt(this->stereo_cam_tilt);
                 break;
+            }
+            case 'K':
+            {
+                this->stereo_snapshot();
             }
             case 'Z':
             {
@@ -368,4 +372,22 @@ void RoverControl::set_blade(int power) {
 void RoverControl::set_brake(bool on) {
     int duty_cycle = on ? PWM_MOTOR_MAX : PWM_MOTOR_MIN;
     pwm.set_pin(this->handle, BRAKE_PIN, duty_cycle);
+}
+
+void RoverControl::stereo_snapshot() {
+    time_t t = time(0);
+    tm* now = localtime(&t);
+    cout << (now->tm_year + 1900) << '-' 
+         << (now->tm_mon + 1) << '-'
+         <<  now->tm_mday
+         << endl;
+
+    std::string date_time = std::to_string(now->tm_year + 1900) + "-"
+                            + std::to_string(now->tm_mon + 1) + "-"
+                            + std::to_string(now->tm_mday) + "-"
+                            + std::to_string(now->tm_min) + ":"
+                            + std::to_string(now->tm_sec);
+
+    system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") + date_time + "_L.jpg").c_str());
+    system((std::string("ffmpeg -f video4linux2 -i /dev/video0 -vframes 1 ~/stereo_snapshots/") + date_time + "_R.jpg").c_str());
 }
