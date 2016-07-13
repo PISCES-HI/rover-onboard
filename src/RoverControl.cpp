@@ -185,6 +185,7 @@ void RoverControl::update() {
             }
             case 'L':
             {
+                std::cout << "PANORAMA!!!!!!\n\n";
                 this->start_stereo_panorama();
             }
             case 'Z':
@@ -233,43 +234,43 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 2: " << result << std::endl;
         }
-        std::cout << "Right motor amp: " << value << std::endl;
+        //std::cout << "Right motor amp: " << value << std::endl;
 
         result = DlnAdcGetValue(this->handle, 0, 3, &value);
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 3: " << result << std::endl;
         }
-        std::cout << "Left motor amp: " << value << std::endl;
+        //std::cout << "Left motor amp: " << value << std::endl;
 
         result = DlnAdcGetValue(this->handle, 0, 6, &value);
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 6: " << result << std::endl;
         }
-        std::cout << "24v amp: " << value << std::endl;
+        //std::cout << "24v amp: " << value << std::endl;
 
         result = DlnAdcGetValue(this->handle, 0, 4, &value);
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 4: " << result << std::endl;
         }
-        std::cout << "ambient temp: " << value << std::endl;
-        std::cout << "ambient temp: " << get_ambient_temperature(value) << std::endl;
+        //std::cout << "ambient temp: " << value << std::endl;
+        //std::cout << "ambient temp: " << get_ambient_temperature(value) << std::endl;
         //float upper_avionics_temp = get_avionics_temperature(value);
         float ambient_temp = get_ambient_temperature(value);
 
-        std::cout << "48v: " << voltage_48v << std::endl;
-        std::cout << "L motor temp: " << l_motor_temp << std::endl;
+        //std::cout << "48v: " << voltage_48v << std::endl;
+        //std::cout << "L motor temp: " << l_motor_temp << std::endl;
         this->telemetry_bundle += "VOLT:"+std::to_string(voltage_48v)+":0.0:0.0:0.0"+"|";
         this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(l_motor_temp)+"|";
         //this->telemetry_bundle += "UPR_A_TEMP:"+std::to_string(upper_avionics_temp)+"|";
         this->telemetry_bundle += "AMBIENT_TEMP:"+std::to_string(ambient_temp)+"|";
 
-        std::cout << "X accel: " << this->adxl.getAccelerationX() << std::endl;
+        /*std::cout << "X accel: " << this->adxl.getAccelerationX() << std::endl;
         std::cout << "Y accel: " << this->adxl.getAccelerationY() << std::endl;
         std::cout << "Z accel: " << this->adxl.getAccelerationZ() << std::endl;
 
         std::cout << "X heading: " << this->mag.getHeadingX() << std::endl;
         std::cout << "Y heading: " << this->mag.getHeadingY() << std::endl;
-        std::cout << "Z heading: " << this->mag.getHeadingZ() << std::endl;
+        std::cout << "Z heading: " << this->mag.getHeadingZ() << std::endl;*/
 
         this->telemetry_bundle += "IMU:"+std::to_string(this->adxl.getAccelerationX())+":"
                                         +std::to_string(this->adxl.getAccelerationY())+":"
@@ -414,9 +415,11 @@ void RoverControl::update_stereo_panorama() {
     if (!this->taking_panorama) return;
 
     if (this->panorama_timer.tick()) {
+        std::cout << "panorama tick\n";
         switch (this->panorama_state) {
-            WAIT_MOVE:
+            case WAIT_MOVE:
             {
+                std::cout << "wait move\n";
                 time_t t = time(0);
                 tm* now = localtime(&t);
 
@@ -438,8 +441,9 @@ void RoverControl::update_stereo_panorama() {
                 this->panorama_timer.set_cooldown(1.0);
                 break;
             }
-            WAIT_PHOTO:
+            case WAIT_PHOTO:
             {
+                std::cout << "wait photo\n";
                 if (this->panorama_pos == 6) {
                     // Done taking a panorama
                     this->taking_panorama = false;

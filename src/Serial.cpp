@@ -15,12 +15,13 @@ Serial::Serial(const char* port_name, int baud) {
 
     set_interface_attribs(baud, 0);     // set speed to <baud> bps, 8n1 (no parity)
     set_blocking(false);                // set no blocking
+    fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) | O_NONBLOCK);
 }
 
 size_t Serial::read_buffer(char* buffer, size_t len) {
     ssize_t n = read(fd, buffer, len);
     if (n == -1) { // Error occurred
-        // std::cerr << "Error reading serial\n";
+        //std::cerr << "Error reading serial\n";
     }
     return n;
 }
