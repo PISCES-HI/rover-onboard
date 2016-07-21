@@ -280,9 +280,16 @@ void RoverControl::update_telemetry() {
                                         +std::to_string(this->mag.getHeadingY())+":"
                                         +std::to_string(this->mag.getHeadingZ())+"|";
 
-        float pressure = barometer.getPressure();
-        float altitude = barometer.getAltitude(pressure);
-        this->telemetry_bundle += "W_PR_ALT:"+std::to_string(pressure)+":"+std::to_string(altitude)+"|";
+        if (barometer.getControl() == BMP085_MODE_PRESSURE_3) {
+            float pressure = barometer.getPressure();
+            float altitude = barometer.getAltitude(pressure);
+            this->telemetry_bundle += "W_PR_ALT:"+std::to_string(pressure)+":"+std::to_string(altitude)+"|";
+            barometer.setControl(BMP085_MODE_TEMPERATURE);
+        } else if (barometer.getControl() == BMP085_MODE_TEMPERATURE) {
+            float temp = barometer.getTemperatureF();
+            this->telemetry_bundle += "W_TEMP:"+std::to_string(temp)+"|";
+            barometer.setControl(BMP085_MODE_PRESSURE_3);
+        }
     }
 
     // Time to send telemetry packet bundle?
