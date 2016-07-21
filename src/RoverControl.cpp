@@ -222,12 +222,14 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 0\n";
         }
+        std::cout << "48v analog: " << value << std::endl;
         float voltage_48v = get_48v_voltage(value);
 
         result = DlnAdcGetValue(this->handle, 0, 1, &value);
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 1: " << result << std::endl;
         }
+        std::cout << "l motor temp reading: " << int(value) << std::endl;
         double l_motor_temp = get_thermistor_temp(value);
 
         result = DlnAdcGetValue(this->handle, 0, 2, &value);
@@ -252,13 +254,13 @@ void RoverControl::update_telemetry() {
         if (DLN_FAILED(result)) {
             std::cout << "Failed to read analog channel 4: " << result << std::endl;
         }
-        //std::cout << "ambient temp: " << value << std::endl;
-        //std::cout << "ambient temp: " << get_ambient_temperature(value) << std::endl;
+        std::cout << "ambient temp: " << value << std::endl;
+        std::cout << "ambient temp: " << get_ambient_temperature(value) << std::endl;
         //float upper_avionics_temp = get_avionics_temperature(value);
         float ambient_temp = get_ambient_temperature(value);
 
-        //std::cout << "48v: " << voltage_48v << std::endl;
-        //std::cout << "L motor temp: " << l_motor_temp << std::endl;
+        std::cout << "48v: " << voltage_48v << std::endl;
+        std::cout << "L motor temp: " << l_motor_temp << std::endl;
         this->telemetry_bundle += "VOLT:"+std::to_string(voltage_48v)+":0.0:0.0:0.0"+"|";
         this->telemetry_bundle += "L_MOTOR_TEMP:"+std::to_string(l_motor_temp)+"|";
         //this->telemetry_bundle += "UPR_A_TEMP:"+std::to_string(upper_avionics_temp)+"|";
